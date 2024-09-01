@@ -116,33 +116,33 @@ impl SlackMessage<Initialized<'_>> {
     /// # Arguments
     ///
     /// - `token` - The Slack API token.
+    /// - `process_body` - Whether to process the body of the message. If `true`, then the following
+    ///   extra post-processing, which will take some time, will be done:
+    ///      1. Detect all sub-strings matching `<(.*?)>`.
+    ///      2. Within those sub-strings, format content starting with `#C` as a [channel link](https://api.slack.com/reference/surfaces/formatting#linking-channels).
+    ///      3. Format content starting with `@U` or `@W` as a [user mention](https://api.slack.com/reference/surfaces/formatting#mentioning-users).
+    ///      4. Format content starting with `!subteam` as a [user group mention](https://api.slack.com/reference/surfaces/formatting#mentioning-groups).
+    ///      5. Format content starting with `!` according to the rules for [special mentions](https://api.slack.com/reference/surfaces/formatting#special-mentions).
+    ///      6. For any other content within those sub-strings, format as a [URL link](https://api.slack.com/reference/surfaces/formatting#linking-urls).
+    ///      7. Once the format has been determined, check for a pipe (`|`) - if present, use the text
+    ///         following the pipe as the label for the link or mention.
     ///
     /// # Reference
     ///
-    /// [Formatting text for app surfaces | Slack](https://api.slack.com/reference/surfaces/formatting)
-    ///
-    /// ## Notes on retrieving formatted messages
-    ///
-    /// If you're [retrieving messages](https://api.slack.com/messaging/retrieving), we've included some extra details in the sections above to help you parse the formatting syntax. This will allow you to properly format it for display on a different service, or to help your app fully understand the intent of a message. Here are the general steps involved in detecting advanced formatting syntax:
-    ///
-    /// 1. Detect all sub-strings matching `<(.*?)>`.
-    /// 2. Within those sub-strings, format content starting with `#C` as a [channel link](https://api.slack.com/reference/surfaces/formatting#linking-channels).
-    /// 3. Format content starting with `@U` or `@W` as a [user mention](https://api.slack.com/reference/surfaces/formatting#mentioning-users).
-    /// 4. Format content starting with `!subteam` as a [user group mention](https://api.slack.com/reference/surfaces/formatting#mentioning-groups).
-    /// 5. Format content starting with `!` according to the rules for [special mentions](https://api.slack.com/reference/surfaces/formatting#special-mentions).
-    /// 6. For any other content within those sub-strings, format as a [URL link](https://api.slack.com/reference/surfaces/formatting#linking-urls).
-    /// 7. Once the format has been determined, check for a pipe (`|`) \- if present, use the text
-    ///    following the pipe as the label for the link or mention.
-    pub async fn resolve(&mut self) -> Result<SlackMessage<Resolved>> {
+    /// [Notes on retrieving formatted messages](https://api.slack.com/reference/surfaces/formatting#retrieving-messages)
+    pub async fn resolve(&mut self, process_body: bool) -> Result<SlackMessage<Resolved>> {
         let channel_name = self.get_channel_name().await?;
         let messages = self.get_messages().await?;
         let user_name = self.determine_user_name(&messages).await?;
-        let body = self.messages_to_body(&messages);
-        let body = self.replace_channel_ids(&body).await?; // 2
-        let body = self.replace_user_ids(&body).await?; // 3
-        let body = self.replace_usergroups_ids(&body).await?; // 4
-        let body = self.replace_special_mentions(&body)?; // 5
-        let body = self.replace_links(&body)?; // 6 and 7
+        let mut body = self.messages_to_body(&messages);
+
+        if process_body {
+            body = self.replace_channel_ids(&body).await?; // Step 2
+            body = self.replace_user_ids(&body).await?; // Step 3
+            body = self.replace_usergroups_ids(&body).await?; // Step 4
+            body = self.replace_special_mentions(&body)?; // Step 5
+            body = self.replace_links(&body)?; // Step 6
+        }
 
         Ok(SlackMessage {
             state: Resolved {
