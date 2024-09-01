@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::response::Response;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct UsergroupsList {
     pub ok: bool,
     pub usergroups: Option<Vec<Usergroup>>,
@@ -13,7 +13,7 @@ impl Response for UsergroupsList {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Usergroup {
     /// The ID of the usergroup.
     pub id: String,

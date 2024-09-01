@@ -8,7 +8,7 @@ pub trait BotsQuery: Request {}
 /// A request for `users.info` API.
 ///
 /// See: https://api.slack.com/methods/users.info
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct Info<'a> {
     /// User ID to get info on
     #[serde(rename = "bot")]
