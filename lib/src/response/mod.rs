@@ -1,5 +1,7 @@
 use std::fmt::Debug;
 
+use serde::Deserialize;
+
 pub mod bots;
 pub mod conversations;
 pub mod usergroups;
@@ -12,4 +14,13 @@ pub trait Response: serde::de::DeserializeOwned + Debug + Clone {
     fn is_ok(&self) -> bool {
         false
     }
+
+    fn next_cursor(&self) -> Option<String> {
+        None
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct ResponseMetadata {
+    pub next_cursor: String,
 }
