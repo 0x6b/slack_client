@@ -4,6 +4,7 @@ pub mod message;
 mod bots;
 mod conversations;
 pub mod request;
+pub mod request_method;
 pub mod response;
 pub mod usergroups;
 pub mod users;
