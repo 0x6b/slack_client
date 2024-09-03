@@ -12,8 +12,9 @@ use crate::{
         state::{Initialized, Resolved, State, Uninitialized},
         RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
     },
-    request::{bots, usergroups, users},
-    response::users::User,
+    request::{bots, usergroups},
+    users,
+    users::User,
     Client,
 };
 

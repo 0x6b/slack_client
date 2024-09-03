@@ -5,8 +5,9 @@ use serde_qs::to_string;
 
 use crate::{
     conversations::ConversationsQuery,
-    request::{bots::BotsQuery, usergroups::UsergroupsQuery, users::UsersQuery, Request},
+    request::{bots::BotsQuery, usergroups::UsergroupsQuery, Request},
     response::Response,
+    users::UsersQuery,
 };
 
 #[derive(Debug)]

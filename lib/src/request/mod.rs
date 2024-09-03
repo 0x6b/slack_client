@@ -1,6 +1,5 @@
 pub mod bots;
 pub mod usergroups;
-pub mod users;
 
 use std::{
     fmt,
