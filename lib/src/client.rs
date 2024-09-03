@@ -4,11 +4,8 @@ use serde_json::from_str;
 use serde_qs::to_string;
 
 use crate::{
-    bots::BotsQuery,
-    conversations::ConversationsQuery,
-    request::{usergroups::UsergroupsQuery, Request},
-    response::Response,
-    users::UsersQuery,
+    bots::BotsQuery, conversations::ConversationsQuery, request::Request, response::Response,
+    usergroups::UsergroupsQuery, users::UsersQuery,
 };
 
 #[derive(Debug)]

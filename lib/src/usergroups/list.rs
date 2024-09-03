@@ -1,6 +1,22 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-use crate::response::Response;
+use crate::{request::Request, response::Response, usergroups::UsergroupsQuery};
+
+/// A request for `usergroups.list` API. No parameters.
+///
+/// See: https://api.slack.com/methods/usergroups.list
+#[derive(Serialize, Debug, Clone)]
+pub struct List {}
+
+impl UsergroupsQuery for List {}
+
+impl Request for List {
+    type Response = UsergroupsList;
+
+    fn path(&self) -> &'static str {
+        "usergroups.list"
+    }
+}
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct UsergroupsList {

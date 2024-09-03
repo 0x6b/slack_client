@@ -1,5 +1,3 @@
-pub mod usergroups;
-
 use std::{
     fmt,
     fmt::{Debug, Display, Formatter},
