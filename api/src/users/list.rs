@@ -1,30 +1,10 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     request::Request,
-    response::users::{UsersInfo, UsersList},
+    response::{Response, ResponseMetadata},
+    users::{info::User, UsersQuery},
 };
-
-/// A marker trait which denotes a request for the `users` API.
-pub trait UsersQuery: Request {}
-
-/// A request for `users.info` API.
-///
-/// See: https://api.slack.com/methods/users.info
-#[derive(Serialize, Debug, Clone)]
-pub struct Info<'a> {
-    /// User ID to get info on
-    #[serde(rename = "user")]
-    pub id: &'a str,
-}
-impl<'a> UsersQuery for Info<'a> {}
-impl<'a> Request for Info<'a> {
-    type Response = UsersInfo;
-
-    fn path(&self) -> &'static str {
-        "users.info"
-    }
-}
 
 /// A request for `users.list` API.
 ///
@@ -45,5 +25,26 @@ impl Request for List {
 
     fn path(&self) -> &'static str {
         "users.list"
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct UsersList {
+    pub ok: bool,
+    pub members: Option<Vec<User>>,
+    pub response_metadata: Option<ResponseMetadata>,
+}
+impl Response for UsersList {
+    fn is_ok(&self) -> bool {
+        self.ok
+    }
+
+    fn next_cursor(&self) -> Option<String> {
+        self.response_metadata.as_ref().and_then(|m| {
+            if m.next_cursor.is_empty() {
+                return None;
+            }
+            Some(m.next_cursor.clone())
+        })
     }
 }

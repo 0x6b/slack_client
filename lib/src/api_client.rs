@@ -2,22 +2,18 @@ use anyhow::{bail, Result};
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
 use serde_json::from_str;
 use serde_qs::to_string;
-
-use crate::{
-    request::{
-        bots::BotsQuery, conversations::ConversationsQuery, usergroups::UsergroupsQuery,
-        users::UsersQuery, Request,
-    },
-    response::Response,
+use slack_api::{
+    bots::BotsQuery, conversations::ConversationsQuery, request::Request, response::Response,
+    usergroups::UsergroupsQuery, users::UsersQuery,
 };
 
 #[derive(Debug)]
-pub struct Client {
+pub struct ApiClient {
     endpoint: String,
     client: reqwest::Client,
 }
 
-impl Client {
+impl ApiClient {
     /// Create a new Slack API client.
     pub fn new(token: &str) -> Result<Self> {
         let client = reqwest::Client::builder()

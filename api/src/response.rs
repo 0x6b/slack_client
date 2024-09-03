@@ -1,20 +1,17 @@
 use std::fmt::Debug;
 
-use serde::Deserialize;
-
-pub mod bots;
-pub mod conversations;
-pub mod usergroups;
-pub mod users;
+use serde::{de::DeserializeOwned, Deserialize};
 
 /// A marker trait for a response from the Slack API, which is just an alias for
 /// `serde::de::DeserializeOwned`. Other restrictions may be added in the future.
 #[allow(dead_code)]
-pub trait Response: serde::de::DeserializeOwned + Debug + Clone {
+pub trait Response: DeserializeOwned + Debug + Clone {
+    /// Returns `true` if the response is successful.
     fn is_ok(&self) -> bool {
         false
     }
 
+    /// Returns the next cursor for pagination, if any.
     fn next_cursor(&self) -> Option<String> {
         None
     }

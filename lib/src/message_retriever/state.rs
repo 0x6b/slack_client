@@ -1,6 +1,7 @@
+use slack_api::usergroups::Usergroup;
 use url::Url;
 
-use crate::{response::usergroups::Usergroup, Client};
+use crate::ApiClient;
 
 /// A marker trait for the state of a Slack message.
 ///
@@ -14,10 +15,10 @@ use crate::{response::usergroups::Usergroup, Client};
 ///   content, and the API client is ready.
 /// - `Resolved`: The message has been retrieved and resolved with the channel name, user name, and
 ///   message body.
-pub trait State {}
-impl<'a> State for Uninitialized<'a> {}
-impl<'a> State for Initialized<'a> {}
-impl<'a> State for Resolved<'a> {}
+pub trait MessageRetrieverState {}
+impl<'a> MessageRetrieverState for Uninitialized<'a> {}
+impl<'a> MessageRetrieverState for Initialized<'a> {}
+impl<'a> MessageRetrieverState for Resolved<'a> {}
 
 #[derive(Debug)]
 pub struct Uninitialized<'a> {
@@ -38,7 +39,7 @@ pub struct Initialized<'a> {
     /// The thread timestamp as f64.
     pub thread_ts64: Option<f64>,
     /// The Slack API client.
-    pub client: Client,
+    pub client: ApiClient,
     /// Cache the usergroups to avoid fetching it multiple times, as there is no API to fetch a
     /// single usergroup.
     pub(crate) usergroups: Option<Vec<Usergroup>>,

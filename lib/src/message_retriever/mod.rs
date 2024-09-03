@@ -1,31 +1,41 @@
-use std::ops::{Deref, DerefMut};
-
-use anyhow::{anyhow, bail, Result};
-use serde::Deserialize;
-use slack_emojify::Emojify;
-use url::Url;
-
-use crate::{
-    message::{
-        state::{Initialized, Resolved, State, Uninitialized},
-        RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
-    },
-    request::{bots, conversations, usergroups, users},
-    response::{conversations::Message, users::User},
-    Client,
+use std::{
+    ops::{Deref, DerefMut},
+    sync::LazyLock,
 };
 
+use anyhow::{anyhow, bail, Result};
+use regex::Regex;
+use serde::Deserialize;
+use slack_api::{bots, conversations, conversations::Message, usergroups, users, users::User};
+use slack_emojify::Emojify;
+use state::{Initialized, MessageRetrieverState, Resolved, Uninitialized};
+use url::Url;
+
+use crate::ApiClient;
+
+mod state;
+
+static RE_CHANNEL: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"<#([CG][A-Z0-9]+)(\|.*)?>").unwrap());
+static RE_USER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<@([UW][A-Z0-9]+)>").unwrap());
+static RE_USERGROUP: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"<!subteam\^([A-Z0-9]+)>").unwrap());
+static RE_SPECIAL_MENTION: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"<!(here|channel|everyone)>").unwrap());
+static RE_LINK: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<([^|]+)\|([^>]+)?>").unwrap());
+
+/// TODO: for the moment, this will retrieve only 1 message
 #[derive(Debug)]
-pub struct SlackMessage<S>
+pub struct MessageRetriever<S>
 where
-    S: State,
+    S: MessageRetrieverState,
 {
     state: S,
 }
 
-impl<S> Deref for SlackMessage<S>
+impl<S> Deref for MessageRetriever<S>
 where
-    S: State,
+    S: MessageRetrieverState,
 {
     type Target = S;
 
@@ -34,36 +44,36 @@ where
     }
 }
 
-impl<S> DerefMut for SlackMessage<S>
+impl<S> DerefMut for MessageRetriever<S>
 where
-    S: State,
+    S: MessageRetrieverState,
 {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.state
     }
 }
 
-impl<'a> SlackMessage<Uninitialized<'_>> {
+impl<'a> MessageRetriever<Uninitialized<'_>> {
     /// Create a new Slack message with the given URL and token.
     ///
     /// # Arguments
     ///
     /// - `url` - The URL of the message.
     /// - `token` - The Slack API token.
-    pub fn try_new(url: &'a Url, token: &'a str) -> Result<SlackMessage<Initialized<'a>>> {
+    pub fn try_new(url: &'a Url, token: &'a str) -> Result<MessageRetriever<Initialized<'a>>> {
         if !url.domain().unwrap_or_default().ends_with("slack.com") {
-            bail!("No Slack URL: {url}");
+            bail!("Not a Slack URL: {url}");
         }
 
         let (channel_id, ts, ts64, thread_ts64) = Self::parse(url)?;
-        Ok(SlackMessage {
+        Ok(MessageRetriever {
             state: Initialized {
                 url,
                 channel_id,
                 ts,
                 ts64,
                 thread_ts64,
-                client: Client::new(token)?,
+                client: ApiClient::new(token)?,
                 usergroups: None,
             },
         })
@@ -110,7 +120,7 @@ struct QueryParams {
     thread_ts: Option<f64>,
 }
 
-impl SlackMessage<Initialized<'_>> {
+impl MessageRetriever<Initialized<'_>> {
     /// Resolve the channel name, user name, and the body of the message with given Slack API token.
     ///
     /// # Arguments
@@ -130,7 +140,7 @@ impl SlackMessage<Initialized<'_>> {
     /// # Reference
     ///
     /// [Notes on retrieving formatted messages](https://api.slack.com/reference/surfaces/formatting#retrieving-messages)
-    pub async fn resolve(&mut self, process_body: bool) -> Result<SlackMessage<Resolved>> {
+    pub async fn resolve(&mut self, process_body: bool) -> Result<MessageRetriever<Resolved>> {
         let channel_name = self.get_channel_name().await?;
         let messages = self.get_messages().await?;
         let user_name = self.determine_user_name(&messages).await?;
@@ -144,7 +154,7 @@ impl SlackMessage<Initialized<'_>> {
             body = self.replace_links(&body)?; // Step 6
         }
 
-        Ok(SlackMessage {
+        Ok(MessageRetriever {
             state: Resolved {
                 url: self.url,
                 channel_name,

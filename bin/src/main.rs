@@ -1,9 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use slack_client::{
-    request::{usergroups, users},
-    response::Response,
-};
+use slack_client::{usergroups, users, Response};
 
 #[derive(Parser)]
 pub struct Args {
@@ -48,7 +45,7 @@ pub enum Command {
 #[tokio::main]
 async fn main() -> Result<()> {
     let Args { token, command } = Args::parse();
-    let client = slack_client::Client::new(&token)?;
+    let client = slack_client::ApiClient::new(&token)?;
 
     match command {
         Command::Users => {
