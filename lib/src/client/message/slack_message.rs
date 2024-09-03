@@ -6,12 +6,13 @@ use slack_emojify::Emojify;
 use url::Url;
 
 use crate::{
-    bots, conversations,
-    conversations::Message,
-    message::{
+    bots,
+    client::message::{
         state::{Initialized, Resolved, State, Uninitialized},
         RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
     },
+    conversations,
+    conversations::Message,
     usergroups, users,
     users::User,
     Client,
@@ -54,7 +55,7 @@ impl<'a> SlackMessage<Uninitialized<'_>> {
     /// - `token` - The Slack API token.
     pub fn try_new(url: &'a Url, token: &'a str) -> Result<SlackMessage<Initialized<'a>>> {
         if !url.domain().unwrap_or_default().ends_with("slack.com") {
-            bail!("No Slack URL: {url}");
+            bail!("Not a Slack URL: {url}");
         }
 
         let (channel_id, ts, ts64, thread_ts64) = Self::parse(url)?;

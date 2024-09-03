@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use slack_client::{response::Response, usergroups, users};
+use slack_client::{usergroups, users, Response};
 
 #[derive(Parser)]
 pub struct Args {

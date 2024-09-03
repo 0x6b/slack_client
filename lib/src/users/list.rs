@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    request::Request,
-    response::{Response, ResponseMetadata},
+    client::{
+        request::Request,
+        response::{Response, ResponseMetadata},
+    },
     users::{info::User, UsersQuery},
 };
 

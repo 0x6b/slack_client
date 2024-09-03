@@ -1,13 +1,8 @@
 mod client;
-pub mod message;
 
-mod bots;
-mod conversations;
-pub mod request;
-pub mod request_method;
-pub mod response;
+pub mod bots;
+pub mod conversations;
 pub mod usergroups;
 pub mod users;
 
-pub use client::Client;
-pub use message::SlackMessage;
+pub use client::{message::SlackMessage, request::Request, response::Response, Client};

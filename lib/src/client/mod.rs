@@ -1,12 +1,18 @@
 use anyhow::{bail, Result};
+use request::Request;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
+use response::Response;
 use serde_json::from_str;
 use serde_qs::to_string;
 
 use crate::{
-    bots::BotsQuery, conversations::ConversationsQuery, request::Request, response::Response,
-    usergroups::UsergroupsQuery, users::UsersQuery,
+    bots::BotsQuery, conversations::ConversationsQuery, usergroups::UsergroupsQuery,
+    users::UsersQuery,
 };
+
+pub mod message;
+pub mod request;
+pub mod response;
 
 #[derive(Debug)]
 pub struct Client {

@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{bots::BotsQuery, request::Request, response::Response};
+use crate::{
+    bots::BotsQuery,
+    client::{request::Request, response::Response},
+};
 
 /// A request for `users.info` API.
 ///

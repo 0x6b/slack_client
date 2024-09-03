@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{conversations::ConversationsQuery, request::Request, response::Response};
+use crate::{
+    client::{request::Request, response::Response},
+    conversations::ConversationsQuery,
+};
 
 /// A request for `conversations.info` API.
 ///

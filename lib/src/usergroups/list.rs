@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{request::Request, response::Response, usergroups::UsergroupsQuery};
+use crate::{
+    client::{request::Request, response::Response},
+    usergroups::UsergroupsQuery,
+};
 
 /// A request for `usergroups.list` API. No parameters.
 ///

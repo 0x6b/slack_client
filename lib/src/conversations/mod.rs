@@ -1,4 +1,4 @@
-use crate::request::Request;
+use crate::client::request::Request;
 
 mod history;
 mod info;

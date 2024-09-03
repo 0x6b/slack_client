@@ -6,10 +6,12 @@ use serde::Deserialize;
 /// `serde::de::DeserializeOwned`. Other restrictions may be added in the future.
 #[allow(dead_code)]
 pub trait Response: serde::de::DeserializeOwned + Debug + Clone {
+    /// Returns `true` if the response is successful.
     fn is_ok(&self) -> bool {
         false
     }
 
+    /// Returns the next cursor for pagination, if any.
     fn next_cursor(&self) -> Option<String> {
         None
     }

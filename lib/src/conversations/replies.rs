@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::{
+    client::request::Request,
     conversations::{history::Conversations, ConversationsQuery},
-    request::Request,
 };
 
 /// A request for `conversations.replies` API.
