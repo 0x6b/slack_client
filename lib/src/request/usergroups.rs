@@ -8,7 +8,7 @@ pub trait UsergroupsQuery: Request {}
 /// A request for `usergroups.list` API. No parameters.
 ///
 /// See: https://api.slack.com/methods/usergroups.list
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct List {}
 impl UsergroupsQuery for List {}
 impl Request for List {

@@ -124,8 +124,8 @@ impl SlackMessage<Initialized<'_>> {
     ///      4. Format content starting with `!subteam` as a [user group mention](https://api.slack.com/reference/surfaces/formatting#mentioning-groups).
     ///      5. Format content starting with `!` according to the rules for [special mentions](https://api.slack.com/reference/surfaces/formatting#special-mentions).
     ///      6. For any other content within those sub-strings, format as a [URL link](https://api.slack.com/reference/surfaces/formatting#linking-urls).
-    ///      7. Once the format has been determined, check for a pipe (`|`) - if present, use the text
-    ///         following the pipe as the label for the link or mention.
+    ///      7. Once the format has been determined, check for a pipe (`|`) - if present, use the
+    ///         text following the pipe as the label for the link or mention.
     ///
     /// # Reference
     ///

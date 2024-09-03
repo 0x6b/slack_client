@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::response::Response;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct BotsInfo {
     pub ok: bool,
     /// The bot object.
@@ -14,7 +14,7 @@ impl Response for BotsInfo {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Bot {
     /// The name of the bot.
     pub name: String,

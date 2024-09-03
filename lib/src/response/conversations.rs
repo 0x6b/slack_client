@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::response::Response;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ConversationsInfo {
     pub ok: bool,
     pub channel: Option<Channel>,
@@ -14,7 +14,7 @@ impl Response for ConversationsInfo {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Channel {
     pub is_im: Option<bool>,
     pub is_mpim: Option<bool>,
@@ -23,7 +23,7 @@ pub struct Channel {
     pub user: Option<String>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Conversations {
     pub ok: bool,
     pub messages: Option<Vec<Message>>,
@@ -34,7 +34,7 @@ impl Response for Conversations {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Message {
     /// User ID of the author.
     pub user: Option<String>,
@@ -46,7 +46,7 @@ pub struct Message {
     pub blocks: Option<Vec<Block>>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Purpose {
     pub value: String,
 }
