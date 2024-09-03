@@ -4,3 +4,8 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+anyhow = "1.0.86"
+clap = { version = "4.5.16", features = ["derive", "env", "wrap_help"] }
+serde_json = "1.0.127"
+slack_client = { path = "../lib" }
+tokio = { version = "1.40.0", features = ["full"] }
