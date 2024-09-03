@@ -45,7 +45,7 @@ pub enum Command {
 #[tokio::main]
 async fn main() -> Result<()> {
     let Args { token, command } = Args::parse();
-    let client = slack_client::Client::new(&token)?;
+    let client = slack_client::SlackApiClient::new(&token)?;
 
     match command {
         Command::Users => {

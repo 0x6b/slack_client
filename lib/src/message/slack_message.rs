@@ -11,7 +11,7 @@ use crate::{
         state::{Initialized, Resolved, State, Uninitialized},
         RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
     },
-    Client,
+    SlackApiClient,
 };
 
 #[derive(Debug)]
@@ -62,7 +62,7 @@ impl<'a> SlackMessage<Uninitialized<'_>> {
                 ts,
                 ts64,
                 thread_ts64,
-                client: Client::new(token)?,
+                client: SlackApiClient::new(token)?,
                 usergroups: None,
             },
         })

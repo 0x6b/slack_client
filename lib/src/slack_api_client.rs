@@ -8,12 +8,12 @@ use slack_api::{
 };
 
 #[derive(Debug)]
-pub struct Client {
+pub struct SlackApiClient {
     endpoint: String,
     client: reqwest::Client,
 }
 
-impl Client {
+impl SlackApiClient {
     /// Create a new Slack API client.
     pub fn new(token: &str) -> Result<Self> {
         let client = reqwest::Client::builder()

@@ -1,7 +1,7 @@
 use slack_api::usergroups::Usergroup;
 use url::Url;
 
-use crate::Client;
+use crate::SlackApiClient;
 
 /// A marker trait for the state of a Slack message.
 ///
@@ -39,7 +39,7 @@ pub struct Initialized<'a> {
     /// The thread timestamp as f64.
     pub thread_ts64: Option<f64>,
     /// The Slack API client.
-    pub client: Client,
+    pub client: SlackApiClient,
     /// Cache the usergroups to avoid fetching it multiple times, as there is no API to fetch a
     /// single usergroup.
     pub(crate) usergroups: Option<Vec<Usergroup>>,
