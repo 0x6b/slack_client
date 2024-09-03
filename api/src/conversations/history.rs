@@ -1,10 +1,7 @@
 use mrkdwn2markdown::Block;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    client::{request::Request, response::Response},
-    conversations::ConversationsQuery,
-};
+use crate::{conversations::ConversationsQuery, request::Request, response::Response};
 
 /// A request for `conversations.history` API.
 ///

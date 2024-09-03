@@ -1,8 +1,9 @@
 mod client;
+pub mod message;
 
-pub mod bots;
-pub mod conversations;
-pub mod usergroups;
-pub mod users;
-
-pub use client::{message::SlackMessage, request::Request, response::Response, Client};
+pub use client::Client;
+pub use message::SlackMessage;
+// Re-export the API modules. Looks not a good idea.
+pub use slack_api::{
+    bots, conversations, request, request::Request, response, response::Response, usergroups, users,
+};

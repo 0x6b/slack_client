@@ -1,6 +1,7 @@
+use slack_api::usergroups::Usergroup;
 use url::Url;
 
-use crate::{usergroups::Usergroup, Client};
+use crate::Client;
 
 /// A marker trait for the state of a Slack message.
 ///

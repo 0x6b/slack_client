@@ -3,5 +3,5 @@ version = "0.2.0"
 edition = "2021"
 
 [workspace]
-members = ["bin", "lib"]
+members = ["api", "bin", "lib"]
 resolver = "2"

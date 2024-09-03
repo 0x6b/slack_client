@@ -930,6 +930,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "slack_api"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "mrkdwn2markdown",
+ "reqwest",
+ "serde",
+]
+
+[[package]]
 name = "slack_client"
 version = "0.2.0"
 dependencies = [
@@ -940,6 +950,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_qs",
+ "slack_api",
  "slack_emojify",
  "url",
 ]

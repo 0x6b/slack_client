@@ -2,19 +2,15 @@ use std::ops::{Deref, DerefMut};
 
 use anyhow::{anyhow, bail, Result};
 use serde::Deserialize;
+use slack_api::{bots, conversations, conversations::Message, usergroups, users, users::User};
 use slack_emojify::Emojify;
 use url::Url;
 
 use crate::{
-    bots,
-    client::message::{
+    message::{
         state::{Initialized, Resolved, State, Uninitialized},
         RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
     },
-    conversations,
-    conversations::Message,
-    usergroups, users,
-    users::User,
     Client,
 };
 
