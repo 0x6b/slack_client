@@ -13,7 +13,7 @@ use url::Url;
 
 use crate::ApiClient;
 
-mod state;
+pub mod state;
 
 static RE_CHANNEL: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"<#([CG][A-Z0-9]+)(\|.*)?>").unwrap());
