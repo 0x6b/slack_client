@@ -3,7 +3,6 @@ use std::fmt::Debug;
 use serde::Deserialize;
 
 pub mod bots;
-pub mod conversations;
 pub mod usergroups;
 pub mod users;
 

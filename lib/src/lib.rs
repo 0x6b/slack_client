@@ -1,6 +1,7 @@
 mod client;
 pub mod message;
 
+mod conversations;
 pub mod request;
 pub mod response;
 
