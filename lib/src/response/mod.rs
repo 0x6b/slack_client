@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use serde::Deserialize;
 
-pub mod bots;
 pub mod usergroups;
 
 /// A marker trait for a response from the Slack API, which is just an alias for

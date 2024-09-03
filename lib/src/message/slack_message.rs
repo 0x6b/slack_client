@@ -6,13 +6,13 @@ use slack_emojify::Emojify;
 use url::Url;
 
 use crate::{
-    conversations,
+    bots, conversations,
     conversations::Message,
     message::{
         state::{Initialized, Resolved, State, Uninitialized},
         RE_CHANNEL, RE_LINK, RE_SPECIAL_MENTION, RE_USER, RE_USERGROUP,
     },
-    request::{bots, usergroups},
+    request::usergroups,
     users,
     users::User,
     Client,

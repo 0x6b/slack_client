@@ -1,4 +1,3 @@
-pub mod bots;
 pub mod usergroups;
 
 use std::{
