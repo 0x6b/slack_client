@@ -957,8 +957,8 @@ dependencies = [
 
 [[package]]
 name = "slack_emojify"
-version = "0.1.0"
-source = "git+https://github.com/0x6b/slack_emojify?tag=v0.1.0#70c2200d066595129cabd6856c4704179b2a919c"
+version = "0.1.1"
+source = "git+https://github.com/0x6b/slack_emojify?tag=v0.1.1#402ec3550a5ad1d0e60eaeb1ff3630da045ec10e"
 dependencies = [
  "regex",
  "serde_json",
