@@ -4,14 +4,9 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-# Error handling
-anyhow = "1.0"
-
-# HTTP Client
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
-
-# Ser/de
-serde = { version = "1.0", features = ["derive"] }
+anyhow.workspace = true
+reqwest.workspace = true
+serde.workspace = true
 
 # To Markdown
-mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.2.0" }
+mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.2.1" }
