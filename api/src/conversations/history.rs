@@ -54,4 +54,6 @@ pub struct Message {
     pub text: Option<String>,
     /// The Slack block kit blocks of the message.
     pub blocks: Option<Vec<Block>>,
+    /// Timestamp of the message.
+    pub ts: String,
 }
