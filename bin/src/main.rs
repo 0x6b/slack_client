@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
-use slack_client::{usergroups, users, Response};
+use jiff::{civil::Date, tz::TimeZone, Timestamp};
+use slack_client::{conversations, usergroups, users, Response};
 
 #[derive(Parser)]
 pub struct Args {
@@ -26,6 +27,21 @@ pub enum Command {
         /// Channel ID
         #[arg(required = true)]
         channel: String,
+    },
+
+    Messages {
+        /// Conversation ID to fetch history for.
+        #[arg(required = true)]
+        channel: String,
+        /// Only messages after this YYYY-MM-DD will be fetched.
+        #[arg(required = true)]
+        oldest: String,
+        /// Only messages before this YYYY-MM-DD will be fetched.
+        #[arg(required = true)]
+        latest: String,
+        /// The IANA time zone database identifiers to use for the timest
+        #[arg(long, default_value = "Asia/Tokyo")]
+        time_zone: String,
     },
 
     /// Dump a list of Slack user groups as JSON
@@ -71,6 +87,35 @@ async fn main() -> Result<()> {
         Command::Usergroups => {
             let usergroups = client.usergroups(&usergroups::List {}).await?;
             println!("{:#?}", usergroups);
+        }
+        Command::Messages { ref channel, ref oldest, ref latest, ref time_zone } => {
+            let ymd_to_f64 = |s: &str| -> Result<f64> {
+                let dt = Date::strptime("%Y-%m-%d", s)?.to_zoned(TimeZone::get(time_zone)?)?;
+                Ok(Timestamp::from(dt).as_second() as f64)
+            };
+
+            let ts_to_datetime = |s: &str| -> Result<String> {
+                let ts = (s.parse::<f64>()? * 1000000f64) as i64; // hacky
+                let ts = Timestamp::from_microsecond(ts)?.to_zoned(TimeZone::get(time_zone)?);
+                Ok(ts.strftime("%Y-%m-%d %H:%M:%S (%Z)").to_string())
+            };
+
+            let messages = client
+                .conversations(&conversations::History {
+                    channel,
+                    oldest: ymd_to_f64(oldest)?,
+                    latest: ymd_to_f64(latest)?,
+                    limit: 1000,
+                    inclusive: true,
+                })
+                .await?
+                .messages;
+
+            if let Some(messages) = messages {
+                for m in messages {
+                    println!("{} {}", ts_to_datetime(&m.ts)?, m.text.unwrap_or_default())
+                }
+            }
         }
         _ => unimplemented!(),
     }
