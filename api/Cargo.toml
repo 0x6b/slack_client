@@ -4,9 +4,8 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-anyhow.workspace = true
 reqwest.workspace = true
 serde.workspace = true
 
 # To Markdown
-mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.2.1" }
+mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.3.0" }
