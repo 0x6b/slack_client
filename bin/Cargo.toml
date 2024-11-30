@@ -3,6 +3,10 @@ name = "bin"
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "slack-client"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1.0.93"
 clap = { version = "4.5.20", features = ["derive", "env", "wrap_help"] }
