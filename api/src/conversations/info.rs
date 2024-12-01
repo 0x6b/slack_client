@@ -35,6 +35,20 @@ impl Response for ConversationsInfo {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Channel {
+    pub id: String,
+    pub name: String,
+    pub is_channel: bool,
+    pub is_private: bool,
+    pub is_shared: bool,
+    pub is_ext_shared: bool,
+    pub is_org_shared: bool,
+    pub is_archived: bool,
+    pub previous_names: Option<Vec<String>>,
+    pub num_members: Option<i64>,
+    pub created: i64,
+    pub updated: i64,
+    pub creator: String,
+
     pub is_im: Option<bool>,
     pub is_mpim: Option<bool>,
     pub name_normalized: Option<String>,
