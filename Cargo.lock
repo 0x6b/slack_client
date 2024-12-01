@@ -560,9 +560,9 @@ checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
 
 [[package]]
 name = "jiff"
-version = "0.1.14"
+version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9d9d414fc817d3e3d62b2598616733f76c4cc74fbac96069674739b881295c8"
+checksum = "db69f08d4fb10524cacdb074c10b296299d71274ddbc830a8ee65666867002e9"
 dependencies = [
  "jiff-tzdb-platform",
  "windows-sys 0.59.0",
@@ -661,8 +661,8 @@ dependencies = [
 
 [[package]]
 name = "mrkdwn2markdown"
-version = "0.3.0"
-source = "git+https://github.com/0x6b/mrkdwn2markdown?tag=v0.3.0#105d27f841a779ef97a102ab9d7efd8446321ee0"
+version = "0.4.0"
+source = "git+https://github.com/0x6b/mrkdwn2markdown?tag=v0.4.0#c8d05287050b45851b4b8d200138a199eda7e8fa"
 dependencies = [
  "regex",
  "serde",
@@ -937,9 +937,9 @@ checksum = "719b953e2095829ee67db738b3bfa9fa368c94900df327b3f07fe6e794d2fe1f"
 
 [[package]]
 name = "rustc-hash"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
+checksum = "c7fb8039b3032c191086b10f11f319a6e99e1e82889c5cc6046f515c9db1d497"
 
 [[package]]
 name = "rustix"
