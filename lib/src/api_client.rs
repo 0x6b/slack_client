@@ -72,15 +72,15 @@ impl ApiClient {
             .text()
             .await?;
 
-        // println!("Request: {} {}", request.method(), url);
-        // println!("Response: {}", response);
+        // println!("Request: {} {url}", request.method());
+        // println!("Response: {response}");
 
         let result = from_str::<T::Response>(&response)?;
 
         if result.is_ok() {
             Ok(result)
         } else {
-            bail!("Request failed: {}", response);
+            bail!("Request failed: {response}");
         }
     }
 }
