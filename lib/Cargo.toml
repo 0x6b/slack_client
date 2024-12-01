@@ -9,7 +9,7 @@ reqwest.workspace = true
 serde.workspace = true
 
 # Regex
-regex = "1.10"
+regex = "1"
 
 # Ser/de
 serde_json = "1.0"
