@@ -126,6 +126,39 @@ async fn main() -> Result<()> {
                 }
             }
         }
+        Command::Channels { creator: _ } => {
+            let mut results = vec![];
+            let mut request = conversations::List {
+                exclude_archived: Some(true),
+                types: Some(
+                    vec![
+                        conversations::ChannelType::Public,
+                        conversations::ChannelType::Private,
+                        // conversations::ChannelType::Mpim,
+                        // conversations::ChannelType::Im,
+                    ]
+                    .into(),
+                ),
+                cursor: None,
+                limit: Some(1000),
+            };
+
+            loop {
+                let channels = client.conversations(&request).await?;
+                let cursor = channels.next_cursor();
+
+                if let Some(channels) = channels.channels {
+                    results.extend(channels)
+                }
+
+                if cursor.is_some() {
+                    request.cursor = cursor;
+                } else {
+                    break;
+                }
+            }
+            println!("{:#?}", results);
+        }
         _ => unimplemented!(),
     }
     Ok(())
