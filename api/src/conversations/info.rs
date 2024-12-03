@@ -11,9 +11,9 @@ pub struct Info<'a> {
     pub channel: &'a str,
 }
 
-impl<'a> ConversationsQuery for Info<'a> {}
+impl ConversationsQuery for Info<'_> {}
 
-impl<'a> Request for Info<'a> {
+impl Request for Info<'_> {
     type Response = ConversationsInfo;
 
     fn path(&self) -> &'static str {

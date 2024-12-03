@@ -16,9 +16,9 @@ use crate::ApiClient;
 /// - `Resolved`: The message has been retrieved and resolved with the channel name, user name, and
 ///   message body.
 pub trait MessageRetrieverState {}
-impl<'a> MessageRetrieverState for Uninitialized<'a> {}
-impl<'a> MessageRetrieverState for Initialized<'a> {}
-impl<'a> MessageRetrieverState for Resolved<'a> {}
+impl MessageRetrieverState for Uninitialized<'_> {}
+impl MessageRetrieverState for Initialized<'_> {}
+impl MessageRetrieverState for Resolved<'_> {}
 
 #[derive(Debug)]
 pub struct Uninitialized<'a> {

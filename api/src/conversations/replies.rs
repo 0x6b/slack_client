@@ -29,9 +29,9 @@ pub struct Replies<'a> {
     pub inclusive: bool,
 }
 
-impl<'a> ConversationsQuery for Replies<'a> {}
+impl ConversationsQuery for Replies<'_> {}
 
-impl<'a> Request for Replies<'a> {
+impl Request for Replies<'_> {
     type Response = Conversations;
 
     fn path(&self) -> &'static str {
