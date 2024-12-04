@@ -22,9 +22,9 @@ pub struct History<'a> {
     pub inclusive: bool,
 }
 
-impl<'a> ConversationsQuery for History<'a> {}
+impl ConversationsQuery for History<'_> {}
 
-impl<'a> Request for History<'a> {
+impl Request for History<'_> {
     type Response = Conversations;
 
     fn path(&self) -> &'static str {

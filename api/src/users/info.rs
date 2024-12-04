@@ -11,8 +11,8 @@ pub struct Info<'a> {
     #[serde(rename = "user")]
     pub id: &'a str,
 }
-impl<'a> UsersQuery for Info<'a> {}
-impl<'a> Request for Info<'a> {
+impl UsersQuery for Info<'_> {}
+impl Request for Info<'_> {
     type Response = UsersInfo;
 
     fn path(&self) -> &'static str {

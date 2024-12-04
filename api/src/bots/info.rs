@@ -12,9 +12,9 @@ pub struct Info<'a> {
     pub id: &'a str,
 }
 
-impl<'a> BotsQuery for Info<'a> {}
+impl BotsQuery for Info<'_> {}
 
-impl<'a> Request for Info<'a> {
+impl Request for Info<'_> {
     type Response = BotsInfo;
 
     fn path(&self) -> &'static str {
