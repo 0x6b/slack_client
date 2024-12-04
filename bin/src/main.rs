@@ -114,15 +114,7 @@ async fn main() -> Result<()> {
 
             if let Some(messages) = messages {
                 for m in messages {
-                    println!("{}", ts_to_datetime(&m.ts)?);
-                    match m.blocks {
-                        None => {}
-                        Some(blocks) => {
-                            blocks.iter().for_each(|block| {
-                                println!("{block}");
-                            });
-                        }
-                    }
+                    println!("# {} {}", ts_to_datetime(&m.ts)?, m.text.unwrap_or_default());
                 }
             }
         }
