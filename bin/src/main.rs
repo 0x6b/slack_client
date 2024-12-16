@@ -108,6 +108,7 @@ async fn main() -> Result<()> {
                     latest: ymd_to_f64(latest)?,
                     limit: 1000,
                     inclusive: true,
+                    cursor: None,
                 })
                 .await?
                 .messages;
