@@ -1,7 +1,11 @@
 use mrkdwn2markdown::Block;
 use serde::{Deserialize, Serialize};
 
-use crate::{conversations::ConversationsQuery, request::Request, response::Response};
+use crate::{
+    conversations::ConversationsQuery,
+    request::Request,
+    response::{Response, ResponseMetadata},
+};
 
 /// A request for `conversations.history` API.
 ///
@@ -20,6 +24,10 @@ pub struct History<'a> {
     /// Include messages with `oldest` or `latest` timestamps in results. Ignored unless either
     /// timestamp is specified.
     pub inclusive: bool,
+    /// Paginate through collections of data by setting the cursor parameter to a next_cursor
+    /// attribute returned by a previous request's response_metadata. Default value fetches the
+    /// first "page" of the collection. See pagination for more detail.
+    pub cursor: Option<String>,
 }
 
 impl ConversationsQuery for History<'_> {}
@@ -36,11 +44,21 @@ impl Request for History<'_> {
 pub struct Conversations {
     pub ok: bool,
     pub messages: Option<Vec<Message>>,
+    pub response_metadata: Option<ResponseMetadata>,
 }
 
 impl Response for Conversations {
     fn is_ok(&self) -> bool {
         self.ok
+    }
+
+    fn next_cursor(&self) -> Option<String> {
+        self.response_metadata.as_ref().and_then(|m| {
+            if m.next_cursor.is_empty() {
+                return None;
+            }
+            Some(m.next_cursor.clone())
+        })
     }
 }
 

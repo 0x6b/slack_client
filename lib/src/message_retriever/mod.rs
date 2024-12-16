@@ -219,6 +219,7 @@ impl MessageRetriever<Initialized<'_>> {
                 oldest: self.ts64,
                 limit: 1,
                 inclusive: true,
+                cursor: None,
             })
             .await?
             .messages;
