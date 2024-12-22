@@ -16,6 +16,9 @@ pub struct ApiClient {
 impl ApiClient {
     /// Create a new Slack API client.
     pub fn new(token: &str) -> Result<Self> {
+        if token.is_empty() {
+            bail!("Empty Slack API token");
+        }
         let client = reqwest::Client::builder()
             .default_headers(HeaderMap::from_iter([
                 (CONTENT_TYPE, HeaderValue::from_static("application/json")),
