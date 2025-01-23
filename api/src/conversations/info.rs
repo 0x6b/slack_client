@@ -33,30 +33,44 @@ impl Response for ConversationsInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Channel {
     pub id: String,
-    pub name: String,
-    pub is_channel: bool,
-    pub is_private: bool,
-    pub is_shared: bool,
-    pub is_ext_shared: bool,
-    pub is_org_shared: bool,
-    pub is_archived: bool,
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_channel: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_private: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_shared: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_ext_shared: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_org_shared: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_archived: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub previous_names: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub num_members: Option<i64>,
     pub created: i64,
     pub updated: i64,
-    pub creator: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creator: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_im: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_mpim: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name_normalized: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<Purpose>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Purpose {
     pub value: String,
 }
