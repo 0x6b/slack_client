@@ -17,9 +17,13 @@ pub struct Args {
 pub enum Command {
     /// Dump a list of Slack channels as JSON
     Channels {
-        /// Only list channels created by a specified username
+        /// Only list channels created by a specified user ID
         #[arg(long)]
         creator: Option<String>,
+
+        /// Only list not archived channels
+        #[arg(long)]
+        exclude_archived: bool,
     },
 
     /// Dump last message of a given channel as JSON
@@ -119,7 +123,7 @@ async fn main() -> Result<()> {
                 }
             }
         }
-        Command::Channels { creator: _ } => {
+        Command::Channels { creator, exclude_archived } => {
             let mut results = vec![];
             let mut request = conversations::List {
                 exclude_archived: Some(true),
@@ -150,7 +154,18 @@ async fn main() -> Result<()> {
                     break;
                 }
             }
-            println!("{:#?}", results);
+
+            if let Some(creator) = creator {
+                results.retain(|c| match c.creator {
+                    Some(ref id) => id == &creator,
+                    None => false,
+                });
+            }
+
+            if exclude_archived {
+                results.retain(|c| c.is_archived.unwrap_or_default());
+            }
+            println!("{}", serde_json::to_string_pretty(&results)?);
         }
         _ => unimplemented!(),
     }

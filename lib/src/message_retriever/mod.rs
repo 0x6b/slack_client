@@ -141,7 +141,7 @@ impl MessageRetriever<Initialized<'_>> {
     ///
     /// [Notes on retrieving formatted messages](https://api.slack.com/reference/surfaces/formatting#retrieving-messages)
     pub async fn resolve(&mut self, process_body: bool) -> Result<MessageRetriever<Resolved>> {
-        let channel_name = self.get_channel_name().await?;
+        let channel_info = self.get_channel_info().await?;
         let messages = self.get_messages().await?;
         let user_name = self.determine_user_name(&messages).await?;
         let mut body = self.messages_to_body(&messages);
@@ -157,23 +157,24 @@ impl MessageRetriever<Initialized<'_>> {
         Ok(MessageRetriever {
             state: Resolved {
                 url: self.url,
-                channel_name,
+                channel_name: channel_info.0,
                 user_name,
                 body,
                 ts: self.ts.parse::<i64>()?,
+                is_private_channel: channel_info.1,
             },
         })
     }
 
-    /// Get the channel name from the Slack API. The name will be different based on the
-    /// conversation type.
+    /// Get the channel information, name and its privacy, from the Slack API. The name will be
+    /// different based on the conversation type.
     ///
     /// - If the conversation is a direct message, then the name will be the display name of the
     ///   user.
     /// - If the conversation is a multi-party direct message, then the name will be the purpose of
     ///   the conversation.
     /// - The name will be the normalized name of the channel otherwise.
-    async fn get_channel_name(&self) -> Result<String> {
+    async fn get_channel_info(&self) -> Result<(String, bool)> {
         let channel = match self
             .client
             .conversations(&conversations::Info { channel: self.channel_id })
@@ -194,17 +195,19 @@ impl MessageRetriever<Initialized<'_>> {
                 Some(user) => user.profile.display_name,
                 None => "UNKNOWN".to_string(),
             };
-            return Ok(format!("DM with {user}"));
+            return Ok((format!("DM with {user}"), false));
         }
 
         if channel.is_mpim.unwrap_or_default() {
             return match channel.purpose {
-                Some(purpose) => Ok(purpose.value),
-                None => Ok("UNKNOWN".to_string()),
+                Some(purpose) => Ok((purpose.value, false)),
+                None => Ok(("UNKNOWN".to_string(), false)),
             };
         }
 
-        Ok(channel.name_normalized.unwrap_or_else(|| "UNKNOWN".to_string()))
+        let is_private_channel = channel.is_private.unwrap_or_default();
+
+        Ok((channel.name_normalized.unwrap_or_else(|| "UNKNOWN".to_string()), is_private_channel))
     }
 
     /// Get the messages from the Slack API. If the message didn't send to the main channel, the

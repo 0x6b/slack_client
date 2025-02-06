@@ -57,4 +57,6 @@ pub struct Resolved<'a> {
     pub body: String,
     /// The timestamp as f64.
     pub ts: i64,
+    /// Is a private channel.
+    pub is_private_channel: bool,
 }
