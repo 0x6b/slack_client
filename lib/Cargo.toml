@@ -19,7 +19,7 @@ serde_qs = "0.13"
 url = "2.5"
 
 # Convert Slack emoji to Unicode emoji
-slack_emojify = { git = "https://github.com/0x6b/slack_emojify", tag = "v0.1.1" }
+slack_emojify = { git = "https://github.com/0x6b/slack_emojify", tag = "v0.1.2" }
 
 # Slack API
 slack_api = { path = "../api" }

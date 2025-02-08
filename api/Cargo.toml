@@ -8,4 +8,4 @@ reqwest.workspace = true
 serde.workspace = true
 
 # To Markdown
-mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.4.0" }
+mrkdwn2markdown = { git = "https://github.com/0x6b/mrkdwn2markdown", tag = "v0.4.1" }

@@ -8,9 +8,9 @@ name = "slack-client"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0.93"
-clap = { version = "4.5.20", features = ["derive", "env", "wrap_help"] }
+anyhow = "1.0.95"
+clap = { version = "4.5.28", features = ["derive", "env", "wrap_help"] }
 slack_client = { path = "../lib" }
 tokio = { version = "1.41.1", features = ["full"] }
-jiff = "0.1.14"
-serde_json = "1.0.134"
+jiff = "0.1.29"
+serde_json = "1.0.138"
