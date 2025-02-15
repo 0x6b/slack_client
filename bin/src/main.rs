@@ -90,8 +90,19 @@ async fn main() -> Result<()> {
             println!("{:#?}", results);
         }
         Command::Usergroups => {
-            let usergroups = client.usergroups(&usergroups::List {}).await?;
-            println!("{:#?}", usergroups);
+            let response = client.usergroups(&usergroups::List {}).await?;
+            if response.ok {
+                if let Some(groups) = response.usergroups {
+                    groups.iter().for_each(|g| {
+                        println!(
+                            r#""{}","{}","{}""#,
+                            g.handle,
+                            g.id,
+                            g.description.as_deref().unwrap_or("")
+                        )
+                    });
+                }
+            }
         }
         Command::Messages { ref channel, ref oldest, ref latest, ref time_zone } => {
             let ymd_to_f64 = |s: &str| -> Result<f64> {
@@ -166,6 +177,24 @@ async fn main() -> Result<()> {
                 results.retain(|c| c.is_archived.unwrap_or_default());
             }
             println!("{}", serde_json::to_string_pretty(&results)?);
+        }
+        Command::UsergroupUsers { usergroup } => {
+            let response = client.usergroups(&usergroups::Users { id: usergroup }).await?;
+            if response.ok {
+                if let Some(users) = response.users {
+                    for ref id in users {
+                        let response = client.users(&users::Info { id }).await?;
+                        if response.ok {
+                            if let Some(user) = response.user {
+                                println!(
+                                    r#""{}","{}","{}""#,
+                                    user.id, user.name, user.profile.real_name_normalized
+                                );
+                            }
+                        }
+                    }
+                }
+            }
         }
         _ => unimplemented!(),
     }
