@@ -18,15 +18,15 @@ pub struct Replies<'a> {
     /// unthreaded message.
     pub ts: f64,
     /// Only messages before this Unix timestamp will be included in results.
-    pub latest: f64,
+    pub latest: Option<f64>,
     /// Only messages after this Unix timestamp will be included in results.
-    pub oldest: f64,
+    pub oldest: Option<f64>,
     /// The maximum number of items to return. Fewer than the requested number of items may be
     /// returned, even if the end of the users list hasn't been reached.
-    pub limit: u64,
+    pub limit: Option<u64>,
     /// Include messages with `oldest` or `latest` timestamps in results. Ignored unless either
     /// timestamp is specified.
-    pub inclusive: bool,
+    pub inclusive: Option<bool>,
 }
 
 impl ConversationsQuery for Replies<'_> {}

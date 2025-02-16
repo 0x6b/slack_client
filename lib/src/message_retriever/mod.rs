@@ -218,10 +218,10 @@ impl MessageRetriever<Initialized<'_>> {
             .client
             .conversations(&conversations::History {
                 channel: self.channel_id,
-                latest: self.ts64,
-                oldest: self.ts64,
-                limit: 1,
-                inclusive: true,
+                latest: Some(self.ts64),
+                oldest: Some(self.ts64),
+                limit: Some(1),
+                inclusive: Some(true),
                 cursor: None,
             })
             .await?
@@ -237,10 +237,10 @@ impl MessageRetriever<Initialized<'_>> {
                 .conversations(&conversations::Replies {
                     channel: self.channel_id,
                     ts: self.thread_ts64.unwrap_or(self.ts64),
-                    latest: self.ts64,
-                    oldest: self.ts64,
-                    limit: 1,
-                    inclusive: true,
+                    latest: Some(self.ts64),
+                    oldest: Some(self.ts64),
+                    limit: Some(1),
+                    inclusive: Some(true),
                 })
                 .await?
                 .messages;
@@ -362,11 +362,22 @@ impl MessageRetriever<Initialized<'_>> {
 
         for cap in RE_USERGROUP.captures_iter(body) {
             if self.usergroups.as_ref().is_none() {
-                self.usergroups =
-                    Some(match self.client.usergroups(&usergroups::List {}).await?.usergroups {
+                self.usergroups = Some(
+                    match self
+                        .client
+                        .usergroups(&usergroups::List {
+                            include_count: None,
+                            include_disabled: None,
+                            include_users: None,
+                            usergroup_ids: None,
+                        })
+                        .await?
+                        .usergroups
+                    {
                         Some(list) => list,
                         None => bail!("Failed to get usergroups"),
-                    });
+                    },
+                );
             }
 
             if let Some(m) = cap.get(1) {

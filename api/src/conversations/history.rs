@@ -15,15 +15,15 @@ pub struct History<'a> {
     /// Conversation ID to fetch history for.
     pub channel: &'a str,
     /// Only messages before this Unix timestamp will be included in results.
-    pub latest: f64,
+    pub latest: Option<f64>,
     /// Only messages after this Unix timestamp will be included in results.
-    pub oldest: f64,
+    pub oldest: Option<f64>,
     /// The maximum number of items to return. Fewer than the requested number of items may be
     /// returned, even if the end of the conversation history hasn't been reached. Maximum of 999.
-    pub limit: u64,
+    pub limit: Option<u64>,
     /// Include messages with `oldest` or `latest` timestamps in results. Ignored unless either
     /// timestamp is specified.
-    pub inclusive: bool,
+    pub inclusive: Option<bool>,
     /// Paginate through collections of data by setting the cursor parameter to a next_cursor
     /// attribute returned by a previous request's response_metadata. Default value fetches the
     /// first "page" of the collection. See pagination for more detail.

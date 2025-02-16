@@ -6,7 +6,16 @@ use crate::{request::Request, response::Response, usergroups::UsergroupsQuery};
 ///
 /// See: https://api.slack.com/methods/usergroups.list
 #[derive(Serialize, Debug, Clone)]
-pub struct List {}
+pub struct List {
+    /// Include the number of users in each User Group.
+    pub include_count: Option<bool>,
+    /// Include disabled User Groups.
+    pub include_disabled: Option<bool>,
+    /// Include the list of users for each User Group.
+    pub include_users: Option<bool>,
+    /// The id of the usergroup you would like to filter the results down to.
+    pub usergroup_ids: Option<String>,
+}
 
 impl UsergroupsQuery for List {}
 

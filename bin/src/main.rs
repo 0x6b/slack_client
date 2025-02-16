@@ -90,7 +90,14 @@ async fn main() -> Result<()> {
             println!("{:#?}", results);
         }
         Command::Usergroups => {
-            let response = client.usergroups(&usergroups::List {}).await?;
+            let response = client
+                .usergroups(&usergroups::List {
+                    include_count: None,
+                    include_disabled: None,
+                    include_users: None,
+                    usergroup_ids: None,
+                })
+                .await?;
             if response.ok {
                 if let Some(groups) = response.usergroups {
                     groups.iter().for_each(|g| {
@@ -119,10 +126,10 @@ async fn main() -> Result<()> {
             let messages = client
                 .conversations(&conversations::History {
                     channel,
-                    oldest: ymd_to_f64(oldest)?,
-                    latest: ymd_to_f64(latest)?,
-                    limit: 1000,
-                    inclusive: true,
+                    oldest: Some(ymd_to_f64(oldest)?),
+                    latest: Some(ymd_to_f64(latest)?),
+                    limit: Some(1000),
+                    inclusive: Some(true),
                     cursor: None,
                 })
                 .await?
