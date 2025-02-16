@@ -1,7 +1,8 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use clap::Parser;
 use jiff::{civil::Date, tz::TimeZone, Timestamp};
 use slack_client::{conversations, usergroups, users, Response};
+use url::Url;
 
 #[derive(Parser)]
 pub struct Args {
@@ -44,6 +45,16 @@ pub enum Command {
         /// Only messages before this YYYY-MM-DD will be fetched.
         #[arg(required = true)]
         latest: String,
+        /// The IANA time zone database identifiers to use for the timest
+        #[arg(long, default_value = "Asia/Tokyo")]
+        time_zone: String,
+    },
+
+    /// Get messages in a thread
+    ThreadMessages {
+        /// Link to the thread
+        #[arg(required = true)]
+        url: String,
         /// The IANA time zone database identifiers to use for the timest
         #[arg(long, default_value = "Asia/Tokyo")]
         time_zone: String,
@@ -117,12 +128,6 @@ async fn main() -> Result<()> {
                 Ok(Timestamp::from(dt).as_second() as f64)
             };
 
-            let ts_to_datetime = |s: &str| -> Result<String> {
-                let ts = (s.parse::<f64>()? * 1000000f64) as i64; // hacky
-                let ts = Timestamp::from_microsecond(ts)?.to_zoned(TimeZone::get(time_zone)?);
-                Ok(ts.strftime("%Y-%m-%d %H:%M:%S (%Z)").to_string())
-            };
-
             let messages = client
                 .conversations(&conversations::History {
                     channel,
@@ -137,7 +142,41 @@ async fn main() -> Result<()> {
 
             if let Some(messages) = messages {
                 for m in messages {
-                    println!("# {} {}", ts_to_datetime(&m.ts)?, m.text.unwrap_or_default());
+                    println!(
+                        "# {} {}",
+                        ts_to_datetime(&m.ts, time_zone)?,
+                        m.text.unwrap_or_default()
+                    );
+                }
+            }
+        }
+        Command::ThreadMessages { ref url, ref time_zone } => {
+            let url = Url::parse(url)?;
+            let (channel, ts) = parse(&url)?;
+            let messages = client
+                .conversations(&conversations::Replies {
+                    channel,
+                    ts,
+                    latest: None,
+                    oldest: None,
+                    limit: None,
+                    inclusive: Some(true),
+                })
+                .await?
+                .messages;
+
+            if let Some(messages) = messages {
+                for m in messages {
+                    println!(
+                        "# {}\n\n{}\n",
+                        ts_to_datetime(&m.ts, time_zone)?,
+                        m.blocks
+                            .unwrap_or_default()
+                            .iter()
+                            .map(|b| b.to_string())
+                            .collect::<Vec<String>>()
+                            .join("\n")
+                    );
                 }
             }
         }
@@ -206,4 +245,41 @@ async fn main() -> Result<()> {
         _ => unimplemented!(),
     }
     Ok(())
+}
+
+/// Parse the given URL and return the channel ID, timestamp, and thread timestamp.
+///
+/// # Arguments
+///
+/// - `url` - The URL to parse.
+///
+/// # Returns
+///
+/// A tuple containing the channel ID (from path segments), timestamp in f64 (parsed the timestamp
+/// as f64)
+fn parse(url: &Url) -> Result<(&str, f64)> {
+    let channel_id = url
+        .path_segments()
+        .ok_or(anyhow!("Failed to get path segments"))?
+        .nth(1)
+        .ok_or(anyhow!("Failed to get the last path segment"))?;
+
+    let ts = url
+        .path_segments()
+        .ok_or(anyhow!("Failed to get path segments"))?
+        .last()
+        .ok_or(anyhow!("Failed to get the last path segment"))?;
+
+    let num = ts.trim_start_matches(|c: char| !c.is_numeric());
+    let (int_part, decimal_part) = num.split_at(num.len() - 6);
+    let ts64 = format!("{int_part}.{decimal_part}").parse::<f64>()?;
+
+    Ok((channel_id, ts64))
+}
+
+/// Convert the given timestamp to a datetime string.
+fn ts_to_datetime(s: &str, time_zone: &str) -> Result<String> {
+    let ts = (s.parse::<f64>()? * 1000000f64) as i64; // hacky
+    let ts = Timestamp::from_microsecond(ts)?.to_zoned(TimeZone::get(time_zone)?);
+    Ok(ts.strftime("%Y-%m-%d %H:%M:%S (%Z)").to_string())
 }

@@ -14,3 +14,4 @@ slack_client = { path = "../lib" }
 tokio = { version = "1.41.1", features = ["full"] }
 jiff = "0.1.29"
 serde_json = "1.0.138"
+url = "2.5.4"
